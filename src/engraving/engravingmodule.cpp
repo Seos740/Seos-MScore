@@ -80,7 +80,7 @@ static void engraving_init_qrc()
 {
 #ifndef NO_QT_SUPPORT
     Q_INIT_RESOURCE(engraving);
-
+    // i think these are fonts
     Q_INIT_RESOURCE(fonts_Leland);
     Q_INIT_RESOURCE(fonts_Bravura);
     Q_INIT_RESOURCE(fonts_Campania);
@@ -107,20 +107,20 @@ void EngravingModule::registerExports()
 {
 #ifndef ENGRAVING_NO_INTERNAL
 
-    m_configuration = std::make_shared<EngravingConfiguration>(iocContext());
-    m_engravingfonts = std::make_shared<EngravingFontsProvider>(iocContext());
+    m_configuration = std::make_shared<EngravingConfiguration>(iocContext()); // make the shared engraving config
+    m_engravingfonts = std::make_shared<EngravingFontsProvider>(iocContext()); // make the shared engraving fonts
 
-    ioc()->registerExport<IEngravingConfiguration>(moduleName(), m_configuration);
+    ioc()->registerExport<IEngravingConfiguration>(moduleName(), m_configuration); // Register both of those things i mentioned above
     ioc()->registerExport<IEngravingFontsProvider>(moduleName(), m_engravingfonts);
 #endif
 
     // internal
-    ioc()->registerExport<rendering::IScoreRenderer>(moduleName(), new rendering::score::ScoreRenderer());
-    ioc()->registerExport<rendering::ISingleRenderer>(moduleName(), new rendering::single::SingleRenderer());
+    ioc()->registerExport<rendering::IScoreRenderer>(moduleName(), new rendering::score::ScoreRenderer()); // register score renderer
+    ioc()->registerExport<rendering::ISingleRenderer>(moduleName(), new rendering::single::SingleRenderer()); // register single renderer
 
 #ifdef MUE_BUILD_ENGRAVING_DEVTOOLS
-    ioc()->registerExport<IEngravingElementsProvider>(moduleName(), new EngravingElementsProvider());
-    ioc()->registerExport<IDiagnosticDrawProvider>(moduleName(), new DiagnosticDrawProvider(iocContext()));
+    ioc()->registerExport<IEngravingElementsProvider>(moduleName(), new EngravingElementsProvider()); // register the engraving elements
+    ioc()->registerExport<IDiagnosticDrawProvider>(moduleName(), new DiagnosticDrawProvider(iocContext())); // register the draw provider
 #endif
 }
 
@@ -137,7 +137,7 @@ void EngravingModule::resolveImports()
 void EngravingModule::registerApi()
 {
 #ifndef ENGRAVING_NO_API
-    apiv1::PluginAPI::registerQmlTypes();
+    apiv1::PluginAPI::registerQmlTypes(); // register qm1 types
 
     auto api = ioc()->resolve<muse::api::IApiRegister>(moduleName());
     if (api) {
